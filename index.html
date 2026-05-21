@@ -106,7 +106,7 @@
     <div class="header">
         <div class="logo">
             <h1>Laporan Eksekutif Realisasi Penerimaan</h1>
-            <p>Pemerintah Kabupaten Luwu • Presisi Tinggi</p>
+            <p>Pemerintah Kabupaten Luwu</p>
         </div>
         <div class="status" id="syncStatus">
             <span class="dot"></span> <span id="syncText">Mencari Data Server...</span>
@@ -130,7 +130,7 @@
             <div class="kpi-sub" style="color:var(--text-light);">Capaian Kumulatif Daerah</div>
         </div>
         <div class="kpi-card orange">
-            <div class="kpi-title">SKPD Performa Terbaik</div>
+            <div class="kpi-title">Peringkat Capaian SKPD </div>
             <div class="kpi-val" id="topSkpdNama" style="font-size:1.2rem;">-</div>
             <div class="kpi-sub" id="topSkpdPersen" style="color:var(--warning);">0% Capaian</div>
         </div>
@@ -298,7 +298,7 @@ function updateDashboard(data) {
         
         if(!hasValue) detailContent = `<div class="detail-empty">Belum ada realisasi bulan apapun yang tercatat.</div>`;
         
-        trDetail.innerHTML = `<td colspan="6" style="padding: 0 15px;"><div class="detail-container"><div style="font-weight:800; font-size:0.8rem; margin-bottom:10px; color:#64748b;">Rincian Histori Bulan:</div><div class="detail-grid">${detailContent}</div></div></td>`;
+        trDetail.innerHTML = `<td colspan="6" style="padding: 0 15px;"><div class="detail-container"><div style="font-weight:800; font-size:0.8rem; margin-bottom:10px; color:#64748b;">Rincian Berdasarkan Bulan:</div><div class="detail-grid">${detailContent}</div></div></td>`;
         tbody.appendChild(trDetail);
 
         setTimeout(() => { const bar = tr.querySelector('.progress-bar'); if (bar) bar.style.width = Math.min(d.persen, 100) + '%'; }, 100);
