@@ -246,6 +246,64 @@
             .header { flex-direction: column; text-align: center; }
             .charts-grid { grid-template-columns: 1fr; }
         }
+		
+		/* ----- TOOLTIP UNTUK SEL REALISASI ----- */
+.cell-realisasi {
+    position: relative;
+    cursor: help;
+}
+.tooltip-bulanan {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: #f1f5f9;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    z-index: 999;
+    pointer-events: none;
+    text-align: left;
+    line-height: 1.6;
+}
+.tooltip-bulanan::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: #1e293b transparent transparent transparent;
+}
+.tooltip-title {
+    font-weight: 800;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #475569;
+    padding-bottom: 4px;
+    text-align: center;
+}
+.tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+.tooltip-row span:last-child {
+    font-weight: 700;
+}
+.cell-realisasi:hover .tooltip-bulanan {
+    display: block;
+}
+/* Pastikan tooltip tidak terpotong */
+.table-card {
+    overflow: visible;
+}
+		
     </style>
 </head>
 <body>
@@ -396,24 +454,43 @@ function processCSV(csvText) {
     let totalAnggaran = 0, totalRealisasi = 0;
 
     for (let i = headerIdx + 1; i < rows.length; i++) {
-        const row = rows[i];
-        if (!row || row.length < 3) continue;
-        const nama = row[1]?.trim();
-        if (!nama || nama.toUpperCase() === 'TOTAL' || nama.toUpperCase().startsWith('GRAND')) break;
+    const row = rows[i];
+    if (!row || row.length < 3) continue;
+    const nama = row[1]?.trim();
+    if (!nama || nama.toUpperCase() === 'TOTAL' || nama.toUpperCase().startsWith('GRAND')) break;
 
-        const anggaran = parseNumberIndonesian(row[2]) * unitFactor;
-        let realisasi = 0;
-        const maxBulan = Math.min(12, row.length - 3);
-        for (let b = 0; b < maxBulan; b++) {
-            const val = parseNumberIndonesian(row[3 + b]) * unitFactor;
-            realisasi += val;
-            monthlyTotals[b] += val;
-        }
-        const persen = anggaran > 0 ? (realisasi / anggaran) * 100 : 0;
-        totalAnggaran += anggaran;
-        totalRealisasi += realisasi;
-        skpdList.push({ nama, anggaran, realisasi, persen });
+    const anggaran = parseNumberIndonesian(row[2]) * unitFactor;
+
+    // 🟢 Buat objek SKPD sementara
+    const skpd = {
+        nama: nama,
+        anggaran: anggaran,
+        realisasi: 0,
+        persen: 0,
+        bulanan: []       // akan diisi nilai per bulan
+    };
+
+    let realisasi = 0;
+    const maxBulan = Math.min(12, row.length - 3);
+    for (let b = 0; b < maxBulan; b++) {
+        const val = parseNumberIndonesian(row[3 + b]) * unitFactor;
+        skpd.bulanan.push(val);   // simpan nilai bulan ini
+        realisasi += val;
+        monthlyTotals[b] += val;
     }
+
+    // 🟢 Isi 0 untuk bulan yang tidak ada datanya (agar panjang array 12)
+    while (skpd.bulanan.length < 12) {
+        skpd.bulanan.push(0);
+    }
+
+    skpd.realisasi = realisasi;
+    skpd.persen = anggaran > 0 ? (realisasi / anggaran) * 100 : 0;
+    totalAnggaran += anggaran;
+    totalRealisasi += realisasi;
+
+    skpdList.push(skpd);   // 🟢 masukkan setelah semua siap
+}
     skpdList.sort((a, b) => b.realisasi - a.realisasi);
     return { skpd: skpdList, tren: monthlyTotals, totalAng: totalAnggaran, totalReal: totalRealisasi };
 }
@@ -424,11 +501,12 @@ function formatRp(n) {
 }
 
 function updateDashboard(data) {
+const bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
     // KPI
     document.getElementById('totalAnggaran').textContent = formatRp(data.totalAng);
     document.getElementById('totalRealisasi').textContent = formatRp(data.totalReal);
 	// Isi tooltip detail per bulan
-const bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
 let tooltipHtml = '';
 data.tren.forEach((nilai, i) => {
     if (nilai > 0) {
@@ -455,7 +533,19 @@ if (tooltipEl) {
         tr.innerHTML = `
             <td><strong>${d.nama}</strong></td>
             <td>${formatRp(d.anggaran)}</td>
-            <td>${formatRp(d.realisasi)}</td>
+            <td class="cell-realisasi">
+				${formatRp(d.realisasi)}
+				<div class="tooltip-bulanan">
+					<div class="tooltip-title">Realisasi per Bulan</div>
+					${d.bulanan.map((val, idx) => {
+						if (val > 0) {
+							return `<div class="tooltip-row"><span>${bulanNama[idx]}</span> <span>${formatRp(val)}</span></div>`;
+						}
+						return '';
+					}).join('')}
+					${d.realisasi === 0 ? '<div class="tooltip-row">Tidak ada realisasi</div>' : ''}
+				</div>
+			</td>
             <td><span class="${badgeClass}">${d.persen.toFixed(2).replace('.', ',')}%</span></td>
             <td><div class="progress-bg"><div class="${barClass}" style="width:0%"></div></div></td>
         `;
