@@ -96,10 +96,6 @@
             overflow: hidden;
             transition: all 0.2s;
         }
-
-		.kpi-card.green {
-    overflow: visible;   /* Izinkan tooltip keluar dari batas kartu */
-}
         .kpi-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
         .kpi-card::before {
             content: '';
@@ -135,6 +131,7 @@
 		/* Tooltip detail bulanan */
 .kpi-card.green {
     position: relative;
+	overflow: visible;
 }
 .tooltip-detail {
     display: none;
