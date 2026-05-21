@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Eksekutif | Padat & Presisi</title>
+    <title>Dashboard Penerimaan</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -105,7 +105,7 @@
 <div class="container">
     <div class="header">
         <div class="logo">
-            <h1>Laporan Eksekutif Realisasi Penerimaan</h1>
+            <h1>Daftar Rekapitulasi Penerimaan SKPD</h1>
             <p>Pemerintah Kabupaten Luwu</p>
         </div>
         <div class="status" id="syncStatus">
@@ -120,9 +120,9 @@
             <div class="kpi-sub" style="color:var(--text-light);">Target APBD Keseluruhan</div>
         </div>
         <div class="kpi-card green">
-            <div class="kpi-title">Total Realisasi Masuk</div>
+            <div class="kpi-title">Total Nilai Penerimaan Masuk</div>
             <div class="kpi-val" id="totalRealisasi">Rp 0</div>
-            <div class="kpi-sub">Total Serapan Saat Ini</div>
+            <div class="kpi-sub">Total Penerimaan Saat Ini</div>
         </div>
         <div class="kpi-card purple">
             <div class="kpi-title">Persentase Global</div>
@@ -138,7 +138,7 @@
 
     <div class="chart-grid">
         <div class="chart-card">
-            <div class="chart-title">Anggaran vs Realisasi per SKPD</div>
+            <div class="chart-title">Anggaran vs Penerimaan per SKPD</div>
             <div class="chart-scroll-y">
                 <div class="chart-inner" id="barChartInner">
                     <canvas id="barChart"></canvas>
@@ -161,7 +161,7 @@
                     <tr>
                         <th>NAMA SKPD</th>
                         <th>ANGGARAN (Rp)</th>
-                        <th>REALISASI (Rp)</th>
+                        <th>PENERIMAAN (Rp)</th>
                         <th>CAPAIAN</th>
                         <th>PROGRES</th>
                         <th style="text-align: center;">AKSI</th>
@@ -296,7 +296,7 @@ function updateDashboard(data) {
             }
         });
         
-        if(!hasValue) detailContent = `<div class="detail-empty">Belum ada realisasi bulan apapun yang tercatat.</div>`;
+        if(!hasValue) detailContent = `<div class="detail-empty">Belum ada penerimaan bulan apapun yang tercatat.</div>`;
         
         trDetail.innerHTML = `<td colspan="6" style="padding: 0 15px;"><div class="detail-container"><div style="font-weight:800; font-size:0.8rem; margin-bottom:10px; color:#64748b;">Rincian Berdasarkan Bulan:</div><div class="detail-grid">${detailContent}</div></div></td>`;
         tbody.appendChild(trDetail);
