@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Realisasi Online - GitHub Pages</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Tidak perlu XLSX lagi karena data dari CSV -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-body: #f1f5f9;
+    --bg-card: #ffffff;
+    --border: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --cyan: #06b6d4;
+    --success: #059669;
+    --success-light: #d1fae5;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+}
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-body);
+    color: var(--text-main); margin: 0; padding: 15px; min-height: 100vh;
+}
+.container { max-width: 1360px; margin: 0 auto; }
+
+/* SVG ICON STYLING */
+svg.icon { width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 6px; }
+
+/* HEADER SECTION (COMPACT) */
+.header {
+    background: var(--bg-card); border: 1px solid var(--border); padding: 15px 20px;
+    border-radius: 16px; display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 15px; box-shadow: var(--shadow); flex-wrap: wrap; gap: 15px;
+}
+.header-title h1 {
+    margin: 0; font-size: 1.6rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px;
+}
+.header-title p { margin: 4px 0 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
+.header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* BUTTONS & BADGES */
+.btn-reset {
+    background: var(--danger-light); color: var(--danger); border: 1px solid #fecaca; padding: 8px 16px;
+    border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit;
+    display: none; font-size: 0.85rem; align-items: center;
+}
+.btn-reset:hover { background: var(--danger); color: white; }
+.btn-live {
+    background: var(--cyan); color: white; border: none; padding: 8px 16px;
+    border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit;
+    font-size: 0.85rem; display: none; align-items: center;
+}
+.btn-live:hover { background: #0891b2; }
+.status-pill {
+    padding: 8px 16px; background: #f8fafc; border-radius: 10px;
+    font-weight: 700; font-size: 0.85rem; color: var(--text-muted); border: 1px solid var(--border);
+    display: flex; align-items: center;
+}
+.status-pill.active { background: var(--success-light); color: var(--success); border-color: #a7f3d0; }
+.status-pill.live { background: #cffafe; color: var(--cyan); border-color: #67e8f9; }
+
+/* UPLOAD ZONE (COMPACT) */
+.upload-zone {
+    background: #ffffff; border: 2px dashed #93c5fd; padding: 25px 20px;
+    border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.2s;
+    margin-bottom: 15px; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.upload-zone:hover, .upload-zone.dragover { background: #eff6ff; border-color: var(--primary); }
+.upload-zone h3 { margin: 0 0 5px 0; color: var(--primary); font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; }
+.upload-zone p { color: var(--text-muted); margin: 0; font-size: 0.85rem; }
+#fileInput { display: none; }
+
+/* KPI CARDS (COMPACT & FULL VISIBILITY) */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
+.kpi-card {
+    background: var(--bg-card); padding: 18px 20px; border-radius: 16px; border: 1px solid var(--border);
+    position: relative; overflow: hidden; box-shadow: var(--shadow);
+}
+.kpi-card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); }
+.kpi-card.green::before { background: var(--success); }
+.kpi-card.purple::before { background: #8b5cf6; }
+.kpi-card.orange::before { background: var(--warning); }
+.kpi-title { color: var(--text-muted); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.kpi-val { font-size: 1.45rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; word-wrap: break-word; line-height: 1.2; }
+.kpi-sub { font-size: 0.8rem; color: var(--success); margin-top: 8px; font-weight: 700; display: flex; align-items: center; }
+
+/* CHARTS (COMPACT) */
+.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 15px; margin-bottom: 15px; }
+.chart-card { background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+.chart-title { font-size: 1rem; font-weight: 800; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; }
+.chart-container { position: relative; height: 260px; width: 100%; }
+
+/* RESPONSIVE TABLE (COMPACT) */
+.table-card { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+.table-wrapper { overflow-x: auto; width: 100%; }
+table { width: 100%; border-collapse: collapse; min-width: 800px; }
+th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+th { color: var(--text-muted); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; background: #f8fafc; white-space: nowrap; }
+td { font-weight: 600; color: var(--text-main); font-size: 0.85rem; white-space: nowrap; }
+tr:hover td { background: #f8fafc; }
+
+/* ANIMATED COMPONENTS */
+.badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; background: var(--success-light); color: var(--success); display: inline-block; }
+.badge.warn { background: var(--warning-light); color: var(--warning); }
+.badge.danger { background: var(--danger-light); color: var(--danger); }
+
+.progress-track { background: #f1f5f9; border-radius: 10px; height: 8px; width: 100%; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 10px; background: var(--primary); transition: width 1s ease-in-out; }
+.green-bar { background: var(--success); }
+
+@media(max-width: 768px) {
+    .header { flex-direction: column; text-align: center; }
+    .header-actions { justify-content: center; width: 100%; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .chart-grid { grid-template-columns: 1fr; }
+    .chart-container { height: 220px; }
+}
+@media(max-width: 480px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="header-title">
+            <h1>Dashboard Realisasi Eksekutif</h1>
+            <p>Data Live dari Google Sheets</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-reset" onclick="muatUlangData()" id="btnRefresh" style="display:inline-flex;background:var(--primary);color:white;border:none;">
+                <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Refresh Data
+            </button>
+            <div class="status-pill active" id="statusBadge">
+                <svg class="icon" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5"/></svg>
+                Online - Google Sheets
+            </div>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <!-- KPI cards sama seperti sebelumnya -->
+        <div class="kpi-card">
+            <div class="kpi-title">Total Pagu Anggaran</div>
+            <div class="kpi-val" id="valAnggaran">Rp 0</div>
+            <div class="kpi-sub">Target TA 2026</div>
+        </div>
+        <div class="kpi-card green">
+            <div class="kpi-title">Total Realisasi</div>
+            <div class="kpi-val" id="valRealisasi">Rp 0</div>
+            <div class="kpi-sub">Kumulatif Penerimaan</div>
+        </div>
+        <div class="kpi-card purple">
+            <div class="kpi-title">Persentase Global</div>
+            <div class="kpi-val" id="valPersen">0.00%</div>
+            <div class="kpi-sub">Serapan Anggaran Keseluruhan</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-title">Performa Tertinggi</div>
+            <div class="kpi-val" id="valTopSkpd">-</div>
+            <div class="kpi-sub" id="valTopPersen" style="color:var(--warning)">0% Capaian Tertinggi</div>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-card">
+            <div class="chart-title">📊 Anggaran vs Realisasi</div>
+            <div class="chart-container"><canvas id="barChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <div class="chart-title">📈 Tren Pertumbuhan Bulanan</div>
+            <div class="chart-container"><canvas id="lineChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="chart-title">📋 Rincian Lengkap SKPD</div>
+        <div class="table-wrapper">
+            <table id="dataTable">
+                <thead><tr><th>NAMA SKPD</th><th>ANGGARAN (Rp)</th><th>REALISASI (Rp)</th><th>CAPAIAN (%)</th><th style="width:25%">PROGRES PENCAPAIAN</th></tr></thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="5" style="text-align:center;color:#64748b;">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// Ganti dengan URL CSV hasil publish Google Sheets Anda
+const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDqg5hWrrznnxr0iFpS13lv0V1JytIRr8hkxwr6miJLqiy6DPxTMnBEimOF5vEhg/pub?output=csv';
+
+Chart.defaults.color = '#64748b';
+Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+Chart.defaults.scale.grid.color = '#f1f5f9';
+Chart.defaults.maintainAspectRatio = false;
+
+let bChart, lChart;
+
+window.addEventListener('DOMContentLoaded', muatUlangData);
+function muatUlangData() {
+    fetch(GOOGLE_SHEET_CSV_URL)
+        .then(res => res.text())
+        .then(csvText => {
+            const data = parseCSV(csvText);
+            ekstrakDanTampilkan(data);
+        })
+        .catch(err => {
+            alert('Gagal mengambil data dari Google Sheets. Periksa kembali URL dan koneksi.');
+            console.error(err);
+        });
+}
+
+function parseCSV(str) {
+    // Parsing CSV sederhana (asumsi tidak ada koma dalam sel)
+    const rows = [];
+    const lines = str.split('\n');
+    for (let line of lines) {
+        line = line.trim();
+        if (line === '') continue;
+        // split by comma
+        const cols = line.split(',').map(c => c.trim());
+        rows.push(cols);
+    }
+    return rows;
+}
+
+function ekstrakDanTampilkan(rows) {
+    // Logika sama seperti ekstrakAlgoritma sebelumnya
+    let pData = [];
+    let barisMulai = -1;
+    for(let i=0; i<rows.length; i++) {
+        let barisStr = rows[i].join("").toUpperCase().replace(/\s+/g, '');
+        if(barisStr.includes('NAMASKPD') && barisStr.includes('ANGGARAN')) { barisMulai = i; break; }
+    }
+    if(barisMulai === -1) {
+        alert("Format Google Sheet tidak sesuai. Pastikan ada header: KODE, NAMA SKPD, ANGGARAN, JAN, FEB, ...");
+        return;
+    }
+
+    let trenBulan = [0,0,0,0,0,0,0,0,0,0,0,0];
+    let totalAnggaranGlobal = 0, totalRealisasiGlobal = 0;
+
+    for(let i=barisMulai+1; i<rows.length; i++) {
+        const row = rows[i];
+        if(!row || row.length < 3) continue;
+        let namaSkpd = row[1]?.trim();
+        if(!namaSkpd || namaSkpd.toUpperCase()==='TOTAL' || namaSkpd.toUpperCase().includes('GRAND TOTAL')) break;
+        const bersihkanAngka = (val) => parseFloat(String(val).replace(/[^0-9.-]+/g,"")) || 0;
+        let anggaran = bersihkanAngka(row[2]);
+        let realisasi = 0;
+        for(let bln=0; bln<12; bln++) {
+            let nilai = bersihkanAngka(row[bln+3]);
+            realisasi += nilai;
+            trenBulan[bln] += nilai;
+        }
+        let persen = anggaran>0 ? (realisasi/anggaran)*100 : 0;
+        totalAnggaranGlobal += anggaran;
+        totalRealisasiGlobal += realisasi;
+        pData.push({nama: namaSkpd, ang: anggaran, real: realisasi, pct: persen});
+    }
+    if(pData.length===0) return alert("Data kosong.");
+    pData.sort((a,b)=> b.real - a.real);
+    tampilkanVisualisasi(pData, trenBulan, totalAnggaranGlobal, totalRealisasiGlobal);
+}
+
+const fmtRp = n => new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', minimumFractionDigits:0}).format(n);
+
+function tampilkanVisualisasi(data, tren, tAnggaran, tRealisasi) {
+    let tPersen = tAnggaran>0 ? (tRealisasi/tAnggaran*100) : 0;
+    let topSkpd = data.filter(d=>d.ang>0).sort((a,b)=>b.pct-a.pct)[0];
+
+    document.getElementById('valAnggaran').innerText = fmtRp(tAnggaran);
+    document.getElementById('valRealisasi').innerText = fmtRp(tRealisasi);
+    document.getElementById('valPersen').innerText = tPersen.toFixed(2)+'%';
+    document.getElementById('valTopSkpd').innerText = topSkpd ? topSkpd.nama : "-";
+    document.getElementById('valTopPersen').innerText = topSkpd ? topSkpd.pct.toFixed(2)+"% Tertinggi" : "0%";
+
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    data.forEach(d => {
+        let badgeClass = d.pct>=40 ? 'badge' : (d.pct>=20 ? 'badge warn' : 'badge danger');
+        let barClass = d.pct>=40 ? 'progress-bar green-bar' : 'progress-bar';
+        let tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${d.nama}</strong></td><td>${fmtRp(d.ang)}</td><td>${fmtRp(d.real)}</td><td><span class="${badgeClass}">${d.pct.toFixed(2)}%</span></td><td><div class="progress-track"><div class="${barClass}" style="width:0%"></div></div></td>`;
+        tbody.appendChild(tr);
+        setTimeout(()=>{ tr.querySelector('.progress-bar').style.width = Math.min(d.pct,100)+'%'; },100);
+    });
+
+    let top8 = data.slice(0,8);
+    if(bChart) bChart.destroy();
+    if(lChart) lChart.destroy();
+
+    const tooltipCallback = {
+        callbacks: { label: ctx => ctx.dataset.label+': '+fmtRp(ctx.parsed.y) }
+    };
+
+    bChart = new Chart(document.getElementById('barChart').getContext('2d'), {
+        type:'bar',
+        data:{
+            labels: top8.map(d=>d.nama),
+            datasets:[
+                {label:'Realisasi', data:top8.map(d=>d.real), backgroundColor:'#2563eb', borderRadius:4},
+                {label:'Anggaran', data:top8.map(d=>d.ang), backgroundColor:'#cbd5e1', borderRadius:4}
+            ]
+        },
+        options:{
+            plugins:{ legend:{ position:'top', labels:{ usePointStyle:true, boxWidth:6, font:{size:11,weight:'700'}}}, tooltip:tooltipCallback },
+            scales:{ y:{ border:{display:false}, ticks:{ callback:v=>'Rp '+(v/1e9).toFixed(0)+'M', font:{size:11,weight:'600'}} }, x:{ grid:{display:false}, ticks:{font:{size:10,weight:'700'}} } }
+        }
+    });
+
+    let batasBulan = tren.map((v,i)=>v>0?i:0).reduce((a,b)=>Math.max(a,b),0);
+    let labels = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'].slice(0,batasBulan+1);
+    let kum = []; let ak=0;
+    for(let i=0;i<=batasBulan;i++){ ak+=tren[i]; kum.push(ak); }
+
+    lChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
+        type:'line',
+        data:{
+            labels: labels,
+            datasets:[{
+                label:'Kumulatif', data:kum, borderColor:'#059669', backgroundColor:'rgba(5,150,105,0.1)', borderWidth:3,
+                fill:true, pointBackgroundColor:'#fff', pointBorderColor:'#059669', pointBorderWidth:2, pointRadius:4
+            }]
+        },
+        options:{
+            plugins:{ legend:{display:false}, tooltip:tooltipCallback },
+            scales:{ y:{ border:{display:false}, ticks:{ callback:v=>'Rp '+(v/1e9).toFixed(0)+'M', font:{size:11,weight:'600'}} }, x:{ grid:{display:false}, ticks:{font:{size:10,weight:'700'}} } }
+        }
+    });
+}
+</script>
+</body>
+</html>
