@@ -161,7 +161,7 @@
                     <tr>
                         <th>NAMA SKPD</th>
                         <th>ANGGARAN (Rp)</th>
-                        <th>PENDAPATAN/PENERIMAAN (Rp)</th>
+                        <th>PENERIMAAN (Rp)</th>
                         <th>CAPAIAN</th>
                         <th>PROGRES</th>
                         <th style="text-align: center;">AKSI</th>
@@ -320,7 +320,7 @@ function renderCharts(data) {
     chartBar = new Chart(document.getElementById('barChart').getContext('2d'), {
         type: 'bar', 
         data: { labels: allSkpd.map(d => d.nama), datasets: [
-            { label: 'Total Pendapatan', data: allSkpd.map(d => d.realisasi), backgroundColor: '#2563eb', borderRadius: 4 },
+            { label: 'Total Penerimaan', data: allSkpd.map(d => d.realisasi), backgroundColor: '#2563eb', borderRadius: 4 },
             { label: 'Pagu Anggaran', data: allSkpd.map(d => d.anggaran), backgroundColor: '#cbd5e1', borderRadius: 4 }
         ]},
         options: { 
