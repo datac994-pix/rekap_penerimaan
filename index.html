@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Rekapitulasi Penerimaan</title>
+    <title>Rekapitulasi Penerimaan | Kabupaten Luwu</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -32,46 +32,28 @@
         }
         .container { max-width: 1440px; margin: 0 auto; }
 
-        /* HEADER */
         .header {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 18px 24px;
-            border-radius: var(--radius);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            flex-wrap: wrap;
-            gap: 15px;
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 18px 24px; border-radius: var(--radius);
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; box-shadow: var(--shadow); flex-wrap: wrap; gap: 15px;
         }
         .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: 1.5rem; font-weight: 800;
             background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px;
         }
         .logo span { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
         .status {
             display: flex; align-items: center; gap: 10px;
-            padding: 8px 16px;
-            background: #ecfdf5;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #059669;
-            border: 1px solid #a7f3d0;
+            padding: 8px 16px; background: #ecfdf5; border-radius: 40px;
+            font-weight: 700; font-size: 0.85rem; color: #059669; border: 1px solid #a7f3d0;
         }
         .status.live { background: #e0f2fe; color: #0284c7; border-color: #bae6fd; }
         .status.offline { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
         .pulse {
-            width: 10px; height: 10px;
-            background: currentColor;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
+            width: 10px; height: 10px; background: currentColor;
+            border-radius: 50%; animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
             0% { opacity: 1; transform: scale(1); }
@@ -79,287 +61,113 @@
             100% { opacity: 1; transform: scale(1); }
         }
 
-        /* KPI */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
-        }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px; }
         .kpi-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.2s;
+            background: var(--card-bg); padding: 20px; border-radius: var(--radius);
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+            position: relative; overflow: hidden; transition: all 0.2s;
         }
         .kpi-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-        .kpi-card::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 5px;
-            background: var(--primary);
-        }
+        .kpi-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--primary); }
         .kpi-card.green::before { background: var(--emerald); }
         .kpi-card.purple::before { background: #8b5cf6; }
         .kpi-card.amber::before { background: var(--amber); }
-        .kpi-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 800;
-            color: var(--muted);
-            margin-bottom: 8px;
-        }
-        .kpi-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            word-break: break-word;
-            line-height: 1.2;
-        }
-        .kpi-sub {
-            font-size: 0.75rem;
-            color: var(--emerald);
-            margin-top: 6px;
-            font-weight: 700;
-        }
-		
-		/* Tooltip detail bulanan */
-.kpi-card.green {
-    position: relative;
-	overflow: visible;
-}
-.tooltip-detail {
-    display: none;
-    position: absolute;
-    top: 110%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1e293b;
-    color: #f8fafc;
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    white-space: nowrap;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    z-index: 100;
-    pointer-events: none;
-}
-.tooltip-detail::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 6px;
-    border-style: solid;
-    border-color: transparent transparent #1e293b transparent;
-}
-.kpi-card.green:hover .tooltip-detail {
-    display: block;
-}
+        .kpi-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 800; color: var(--muted); margin-bottom: 8px; }
+        .kpi-value { font-size: 1.5rem; font-weight: 800; word-break: break-word; line-height: 1.2; }
+        .kpi-sub { font-size: 0.75rem; color: var(--emerald); margin-top: 6px; font-weight: 700; }
 
-        /* CHARTS */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+        .kpi-card.green { position: relative; overflow: visible; }
+        .tooltip-detail {
+            display: none; position: absolute; top: 110%; left: 50%; transform: translateX(-50%);
+            background: #1e293b; color: #f8fafc; padding: 12px 16px; border-radius: 12px;
+            font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 100; pointer-events: none;
         }
-        .chart-card {
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+        .tooltip-detail::before {
+            content: ''; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            border-width: 6px; border-style: solid; border-color: transparent transparent #1e293b transparent;
         }
-        .chart-title {
-            font-weight: 800;
-            font-size: 1rem;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .kpi-card.green:hover .tooltip-detail { display: block; }
+
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .chart-card { background: var(--card-bg); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .chart-title { font-weight: 800; font-size: 1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
         .chart-wrap { position: relative; height: 280px; }
-
-        /* TABLE */
-        .table-card {
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            overflow: hidden;
-        }
-        .table-wrap { overflow-x: auto; }
+			.chart-scroll {
+				overflow-x: auto;
+				overflow-y: hidden;
+				width: 100%;
+			}
+			.chart-scroll canvas {
+				display: block;
+			}
+        .table-card { background: var(--card-bg); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: visible; }
+        .table-wrap { overflow-x: auto; overflow-y: visible; }
         table { width: 100%; border-collapse: collapse; min-width: 750px; }
-        th {
-            text-align: left;
-            padding: 12px 16px;
-            background: #f8fafc;
-            font-weight: 800;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: var(--muted);
-            letter-spacing: 0.03em;
-        }
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #f1f5f9;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
+        th { text-align: left; padding: 12px 16px; background: #f8fafc; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; color: var(--muted); letter-spacing: 0.03em; }
+        td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; font-weight: 600; font-size: 0.85rem; }
         tr:hover td { background: #f8fafc; }
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.75rem;
-            background: #d1fae5;
-            color: #065f46;
-        }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; background: #d1fae5; color: #065f46; }
         .badge.warn { background: #fef3c7; color: #92400e; }
         .badge.danger { background: #fee2e2; color: #991b1b; }
-        .progress-bg {
-            height: 8px;
-            background: #f1f5f9;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 10px;
-            background: var(--primary);
-            width: 0%;
-            transition: width 1.5s ease;
-        }
+        .progress-bg { height: 8px; background: #f1f5f9; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 10px; background: var(--primary); width: 0%; transition: width 1.5s ease; }
         .progress-fill.green { background: var(--emerald); }
+
+        .cell-realisasi { position: relative; cursor: help; }
+        .tooltip-bulanan {
+            display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+            background: #1e293b; color: #f1f5f9; padding: 10px 14px; border-radius: 10px;
+            font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 999; pointer-events: none; text-align: left; line-height: 1.6;
+        }
+        .tooltip-bulanan::after {
+            content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            border-width: 6px; border-style: solid; border-color: #1e293b transparent transparent transparent;
+        }
+        .tooltip-title { font-weight: 800; margin-bottom: 4px; border-bottom: 1px solid #475569; padding-bottom: 4px; text-align: center; }
+        .tooltip-row { display: flex; justify-content: space-between; gap: 16px; }
+        .tooltip-row span:last-child { font-weight: 700; }
+        .cell-realisasi:hover .tooltip-bulanan { display: block; }
 
         @media (max-width: 768px) {
             .header { flex-direction: column; text-align: center; }
             .charts-grid { grid-template-columns: 1fr; }
         }
-		
-		/* ----- TOOLTIP UNTUK SEL REALISASI ----- */
-.cell-realisasi {
-    position: relative;
-    cursor: help;
-}
-.tooltip-bulanan {
-    display: none;
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1e293b;
-    color: #f1f5f9;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    white-space: nowrap;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    z-index: 999;
-    pointer-events: none;
-    text-align: left;
-    line-height: 1.6;
-}
-.tooltip-bulanan::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 6px;
-    border-style: solid;
-    border-color: #1e293b transparent transparent transparent;
-}
-.tooltip-title {
-    font-weight: 800;
-    margin-bottom: 4px;
-    border-bottom: 1px solid #475569;
-    padding-bottom: 4px;
-    text-align: center;
-}
-.tooltip-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-}
-.tooltip-row span:last-child {
-    font-weight: 700;
-}
-.cell-realisasi:hover .tooltip-bulanan {
-    display: block;
-}
-/* Pastikan tooltip tidak terpotong */
-.table-card {
-    overflow: visible;
-}
-		
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">
-            <h1>Daftar Rekapitulasi Penerimaan</h1>
-            <span>Kabupaten Luwu</span>
-        </div>
-        <div class="status live" id="syncStatus">
-            <span class="pulse"></span> <span id="syncText">Aktif</span>
-        </div>
+        <div class="logo"><h1>Daftar Rekapitulasi Penerimaan</h1><span>Kabupaten Luwu • 2026</span></div>
+        <div class="status live" id="syncStatus"><span class="pulse"></span> <span id="syncText">Sinkronisasi Aktif</span></div>
     </div>
 
     <div class="kpi-grid">
-        <div class="kpi-card">
-            <div class="kpi-title">Total Anggaran</div>
-            <div class="kpi-value" id="totalAnggaran">Rp 0</div>
-            <div class="kpi-sub">Target 2026</div>
-        </div>
+        <div class="kpi-card"><div class="kpi-title">Total Anggaran</div><div class="kpi-value" id="totalAnggaran">Rp 0</div><div class="kpi-sub">Target APBD 2026</div></div>
         <div class="kpi-card green" id="cardRealisasi">
-			<div class="kpi-title">Total Realisasi</div>
-			<div class="kpi-value" id="totalRealisasi">Rp 0</div>
-			<div class="kpi-sub">Kumulatif</div>
-			<div class="tooltip-detail" id="tooltipRealisasi"></div>
-		</div>
-        <div class="kpi-card purple">
-            <div class="kpi-title">Persentase</div>
-            <div class="kpi-value" id="persenGlobal">0,00%</div>
-            <div class="kpi-sub">Serapan</div>
+            <div class="kpi-title">Total Realisasi</div><div class="kpi-value" id="totalRealisasi">Rp 0</div><div class="kpi-sub">Akumulasi Penerimaan</div>
+            <div class="tooltip-detail" id="tooltipRealisasi"></div>
         </div>
-        <div class="kpi-card amber">
-            <div class="kpi-title">Top SKPD</div>
-            <div class="kpi-value" id="topSkpdNama" style="font-size:1.2rem;">-</div>
-            <div class="kpi-sub" id="topSkpdPersen" style="color:var(--amber);">0%</div>
-        </div>
+        <div class="kpi-card purple"><div class="kpi-title">Persentase Serapan</div><div class="kpi-value" id="persenGlobal">0,00%</div><div class="kpi-sub">Realisasi / Anggaran</div></div>
+        <div class="kpi-card amber"><div class="kpi-title">Kinerja Tertinggi</div><div class="kpi-value" id="topSkpdNama" style="font-size:1.2rem;">-</div><div class="kpi-sub" id="topSkpdPersen" style="color:var(--amber);">0%</div></div>
     </div>
 
     <div class="charts-grid">
         <div class="chart-card">
-            <div class="chart-title">Anggaran vs Realisasi</div>
-            <div class="chart-wrap"><canvas id="barChart"></canvas></div>
-        </div>
-        <div class="chart-card">
-            <div class="chart-title">Tren Kumulatif Bulanan</div>
-            <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
-        </div>
+    <div class="chart-title">📊 Anggaran vs Realisasi per SKPD</div>
+    <div class="chart-wrap chart-scroll" id="barChartWrapper">
+        <canvas id="barChart"></canvas>
+    </div>
+</div>
+        <div class="chart-card"><div class="chart-title">📈 Tren Kumulatif Realisasi Bulanan</div><div class="chart-wrap"><canvas id="lineChart"></canvas></div></div>
     </div>
 
     <div class="table-card">
-        <div class="chart-title">Rincian SKPD</div>
+        <div class="chart-title">📋 Rincian Lengkap per SKPD</div>
         <div class="table-wrap">
             <table>
-                <thead>
-                    <tr><th>SKPD</th><th>ANGGARAN</th><th>REALISASI</th><th>CAPAIAN</th><th>PROGRES</th></tr>
-                </thead>
+                <thead><tr><th>SKPD</th><th>ANGGARAN</th><th>REALISASI</th><th>CAPAIAN</th><th>PROGRES</th></tr></thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
@@ -367,63 +175,39 @@
 </div>
 
 <script>
-// ? KONFIGURASI
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDqg5hWrrznnxr0iFpS13lv0V1JytIRr8hkxwr6miJLqiy6DPxTMnBEimOF5vEhg/pub?output=csv';
-const SYNC_INTERVAL = 8000; // 8 detik
+const SYNC_INTERVAL = 8000;
 
-// Global state
-let lastDataHash = null;
-let chartBar, chartLine;
-let currentData = { skpd: [], tren: [0,0,0,0,0,0,0,0,0,0,0,0], totalAng: 0, totalReal: 0 };
+let lastDataHash = null, chartBar, chartLine;
+let currentData = { skpd: [], tren: [], totalAng: 0, totalReal: 0 };
 
-// ====================== PARSER ANGKA SUPER CERDAS ======================
 function parseNumberIndonesian(str) {
-    let s = String(str).trim();
-    // Hapus simbol Rp, spasi, dll
-    s = s.replace(/[^\d,\.\-]/g, '');
+    let s = String(str).trim().replace(/[^\d,\.\-]/g, '');
     if (!s) return 0;
-
-    // Deteksi format Indonesia: 1.234,56 atau 123,45
-    if (/^\d{1,3}(\.\d{3})*,\d{1,2}$/.test(s)) {
-        return parseFloat(s.replace(/\./g, '').replace(',', '.'));
-    }
-    // Jika ada koma dan titik
-    if (s.includes(',') && s.includes('.')) {
-        // anggap titik ribuan, koma desimal
-        return parseFloat(s.replace(/\./g, '').replace(',', '.'));
-    }
-    // Hanya koma
+    if (/^\d{1,3}(\.\d{3})*,\d{1,2}$/.test(s)) return parseFloat(s.replace(/\./g, '').replace(',', '.'));
+    if (s.includes(',') && s.includes('.')) return parseFloat(s.replace(/\./g, '').replace(',', '.'));
     if (s.includes(',') && !s.includes('.')) {
         const parts = s.split(',');
-        if (parts.length === 2 && parts[1].length <= 2) {
-            return parseFloat(parts[0] + '.' + parts[1]);
-        } else {
-            return parseFloat(s.replace(/,/g, ''));
-        }
+        return (parts.length === 2 && parts[1].length <= 2) ? parseFloat(parts[0] + '.' + parts[1]) : parseFloat(s.replace(/,/g, ''));
     }
-    // Hanya titik
     if (s.includes('.') && !s.includes(',')) {
         const dotCount = (s.match(/\./g) || []).length;
         if (dotCount > 1) return parseFloat(s.replace(/\./g, ''));
         const parts = s.split('.');
-        if (parts[1].length === 3 && parseInt(parts[0]) > 999) {
-            return parseFloat(s.replace('.', ''));
-        }
+        if (parts[1].length === 3 && parseInt(parts[0]) > 999) return parseFloat(s.replace('.', ''));
     }
     return parseFloat(s) || 0;
 }
 
-// Deteksi faktor satuan dari header kolom
 function detectUnitFactor(headerRow) {
-    const headerText = headerRow.join(' ').toUpperCase();
-    if (headerText.includes('TRILIUN')) return 1e12;
-    if (headerText.includes('MILIAR')) return 1e9;
-    if (headerText.includes('JUTA')) return 1e6;
-    if (headerText.includes('RIBU')) return 1e3;
-    return 1; // Rupiah
+    const h = headerRow.join(' ').toUpperCase();
+    if (h.includes('TRILIUN')) return 1e12;
+    if (h.includes('MILIAR')) return 1e9;
+    if (h.includes('JUTA')) return 1e6;
+    if (h.includes('RIBU')) return 1e3;
+    return 1;
 }
 
-// ====================== FETCH & PROCESS ======================
 async function fetchCSV() {
     const res = await fetch(CSV_URL);
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -434,290 +218,141 @@ function processCSV(csvText) {
     const lines = csvText.split('\n').filter(l => l.trim() !== '');
     if (lines.length < 2) throw new Error('Data kosong');
     const rows = lines.map(line => line.split(',').map(c => c.trim()));
-
-    // Cari baris header
     let headerIdx = -1;
     for (let i = 0; i < rows.length; i++) {
         const joined = rows[i].join(' ').toUpperCase().replace(/\s+/g, '');
-        if (joined.includes('NAMASKPD') && joined.includes('ANGGARAN')) {
-            headerIdx = i;
-            break;
-        }
+        if (joined.includes('NAMASKPD') && joined.includes('ANGGARAN')) { headerIdx = i; break; }
     }
-    if (headerIdx === -1) throw new Error('Header SKPD tidak ditemukan');
-
-    const headerRow = rows[headerIdx];
-    const unitFactor = detectUnitFactor(headerRow);
-
-    const skpdList = [];
-    const monthlyTotals = [0,0,0,0,0,0,0,0,0,0,0,0];
+    if (headerIdx === -1) throw new Error('Header tidak ditemukan');
+    const unitFactor = detectUnitFactor(rows[headerIdx]);
+    const skpdList = [], monthlyTotals = [0,0,0,0,0,0,0,0,0,0,0,0];
     let totalAnggaran = 0, totalRealisasi = 0;
 
     for (let i = headerIdx + 1; i < rows.length; i++) {
-    const row = rows[i];
-    if (!row || row.length < 3) continue;
-    const nama = row[1]?.trim();
-    if (!nama || nama.toUpperCase() === 'TOTAL' || nama.toUpperCase().startsWith('GRAND')) break;
-
-    const anggaran = parseNumberIndonesian(row[2]) * unitFactor;
-
-    // 🟢 Buat objek SKPD sementara
-    const skpd = {
-        nama: nama,
-        anggaran: anggaran,
-        realisasi: 0,
-        persen: 0,
-        bulanan: []       // akan diisi nilai per bulan
-    };
-
-    let realisasi = 0;
-    const maxBulan = Math.min(12, row.length - 3);
-    for (let b = 0; b < maxBulan; b++) {
-        const val = parseNumberIndonesian(row[3 + b]) * unitFactor;
-        skpd.bulanan.push(val);   // simpan nilai bulan ini
-        realisasi += val;
-        monthlyTotals[b] += val;
+        const row = rows[i];
+        if (!row || row.length < 3) continue;
+        const nama = row[1]?.trim();
+        if (!nama || nama.toUpperCase() === 'TOTAL' || nama.toUpperCase().startsWith('GRAND')) break;
+        const anggaran = parseNumberIndonesian(row[2]) * unitFactor;
+        const skpd = { nama, anggaran, realisasi: 0, persen: 0, bulanan: [] };
+        let realisasi = 0;
+        const maxBulan = Math.min(12, row.length - 3);
+        for (let b = 0; b < maxBulan; b++) {
+            const val = parseNumberIndonesian(row[3 + b]) * unitFactor;
+            skpd.bulanan.push(val); realisasi += val; monthlyTotals[b] += val;
+        }
+        while (skpd.bulanan.length < 12) skpd.bulanan.push(0);
+        skpd.realisasi = realisasi;
+        skpd.persen = anggaran > 0 ? (realisasi / anggaran) * 100 : 0;
+        totalAnggaran += anggaran; totalRealisasi += realisasi;
+        skpdList.push(skpd);
     }
-
-    // 🟢 Isi 0 untuk bulan yang tidak ada datanya (agar panjang array 12)
-    while (skpd.bulanan.length < 12) {
-        skpd.bulanan.push(0);
-    }
-
-    skpd.realisasi = realisasi;
-    skpd.persen = anggaran > 0 ? (realisasi / anggaran) * 100 : 0;
-    totalAnggaran += anggaran;
-    totalRealisasi += realisasi;
-
-    skpdList.push(skpd);   // 🟢 masukkan setelah semua siap
-}
     skpdList.sort((a, b) => b.realisasi - a.realisasi);
     return { skpd: skpdList, tren: monthlyTotals, totalAng: totalAnggaran, totalReal: totalRealisasi };
 }
 
-// ====================== RENDER UI ======================
-function formatRp(n) {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
-}
+function formatRp(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n); }
 
 function updateDashboard(data) {
-const bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-    // KPI
+    const bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
     document.getElementById('totalAnggaran').textContent = formatRp(data.totalAng);
     document.getElementById('totalRealisasi').textContent = formatRp(data.totalReal);
-	// Isi tooltip detail per bulan
-
-let tooltipHtml = '';
-data.tren.forEach((nilai, i) => {
-    if (nilai > 0) {
-        tooltipHtml += `<div style="display:flex;justify-content:space-between;gap:20px;"><span>${bulanNama[i]}</span> <span style="font-weight:700;">${formatRp(nilai)}</span></div>`;
-    }
-});
-const tooltipEl = document.getElementById('tooltipRealisasi');
-if (tooltipEl) {
-    tooltipEl.innerHTML = tooltipHtml || '<div>Tidak ada data</div>';
-}
+    let tooltipHtml = '<div style="font-weight:700;margin-bottom:6px;text-align:center;">Realisasi Bulanan</div>';
+    data.tren.forEach((nilai, i) => { if (nilai > 0) tooltipHtml += `<div style="display:flex;justify-content:space-between;gap:20px;"><span>${bulanNama[i]}</span> <span style="font-weight:700;">${formatRp(nilai)}</span></div>`; });
+    document.getElementById('tooltipRealisasi').innerHTML = tooltipHtml || '<div>Tidak ada data</div>';
     const persenGlobal = data.totalAng > 0 ? (data.totalReal / data.totalAng * 100) : 0;
     document.getElementById('persenGlobal').textContent = persenGlobal.toFixed(2).replace('.', ',') + '%';
     const top = data.skpd.filter(d => d.anggaran > 0).sort((a,b) => b.persen - a.persen)[0];
     document.getElementById('topSkpdNama').textContent = top ? top.nama : '-';
     document.getElementById('topSkpdPersen').textContent = top ? top.persen.toFixed(2).replace('.', ',') + '%' : '0%';
 
-    // Tabel
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
     data.skpd.forEach(d => {
         const badgeClass = d.persen >= 40 ? 'badge' : (d.persen >= 20 ? 'badge warn' : 'badge danger');
         const barClass = d.persen >= 40 ? 'progress-fill green' : 'progress-fill';
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><strong>${d.nama}</strong></td>
-            <td>${formatRp(d.anggaran)}</td>
-            <td class="cell-realisasi">
-				${formatRp(d.realisasi)}
-				<div class="tooltip-bulanan">
-					<div class="tooltip-title">Realisasi per Bulan</div>
-					${d.bulanan.map((val, idx) => {
-						if (val > 0) {
-							return `<div class="tooltip-row"><span>${bulanNama[idx]}</span> <span>${formatRp(val)}</span></div>`;
-						}
-						return '';
-					}).join('')}
-					${d.realisasi === 0 ? '<div class="tooltip-row">Tidak ada realisasi</div>' : ''}
-				</div>
-			</td>
+        tr.innerHTML = `<td><strong>${d.nama}</strong></td><td>${formatRp(d.anggaran)}</td>
+            <td class="cell-realisasi">${formatRp(d.realisasi)}
+                <div class="tooltip-bulanan"><div class="tooltip-title">📅 Realisasi per Bulan</div>
+                ${d.bulanan.map((val, idx) => val > 0 ? `<div class="tooltip-row"><span>${bulanNama[idx]}</span> <span>${formatRp(val)}</span></div>` : '').join('')}
+                ${d.realisasi === 0 ? '<div class="tooltip-row">Belum ada realisasi</div>' : ''}</div>
+            </td>
             <td><span class="${badgeClass}">${d.persen.toFixed(2).replace('.', ',')}%</span></td>
-            <td><div class="progress-bg"><div class="${barClass}" style="width:0%"></div></div></td>
-        `;
+            <td><div class="progress-bg"><div class="${barClass}" style="width:0%"></div></div></td>`;
         tbody.appendChild(tr);
-        setTimeout(() => {
-            tr.querySelector('.progress-fill').style.width = Math.min(d.persen, 100) + '%';
-        }, 50);
+        setTimeout(() => { const bar = tr.querySelector('.progress-fill'); if (bar) bar.style.width = Math.min(d.persen, 100) + '%'; }, 50);
     });
-
-    // Charts
     renderCharts(data);
 }
 
 function renderCharts(data) {
-    const allSkpd = data.skpd;   // SEMUA SKPD ditampilkan
-    const labels = allSkpd.map(d => d.nama);
-
-    // Palet warna keren
-    const colorPalette = [
-        '#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444',
-        '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#6366f1',
-        '#84cc16', '#06b6d4', '#d946ef', '#0ea5e9', '#eab308'
-    ];
-
-    // Warna untuk tiap batang realisasi
+    const allSkpd = data.skpd, labels = allSkpd.map(d => d.nama);
+    const colorPalette = ['#3b82f6','#06b6d4','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16','#0ea5e9','#d946ef','#eab308','#64748b'];
     const realColors = allSkpd.map((_, i) => colorPalette[i % colorPalette.length]);
-
     if (chartBar) chartBar.destroy();
-    const barCtx = document.getElementById('barChart').getContext('2d');
-    chartBar = new Chart(barCtx, {
-        type: 'bar',
-        data: {
-            labels,
-            datasets: [
-                {
-                    label: 'Realisasi',
-                    data: allSkpd.map(d => d.realisasi),
-                    backgroundColor: realColors,
-                    borderRadius: 6,
-                    borderWidth: 0,
-                },
-                {
-                    label: 'Anggaran',
-                    data: allSkpd.map(d => d.anggaran),
-                    backgroundColor: '#cbd5e1',
-                    borderRadius: 6,
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: { usePointStyle: true, boxWidth: 6, font: { size: 11, weight: '700' } }
-                },
-                tooltip: {
-                    callbacks: { label: ctx => ctx.dataset.label + ': ' + formatRp(ctx.raw) }
-                }
-            },
-            scales: {
-                y: {
-                    border: { display: false },
-                    ticks: {
-                        callback: v => formatRp(v),
-                        font: { size: 10, weight: '600' }
-                    }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: {
-                        font: { size: 10, weight: '700' },
-                        maxRotation: 45,   // miringkan label jika terlalu panjang
-                        minRotation: 0
-                    }
-                }
-            }
+    chartBar = new Chart(document.getElementById('barChart').getContext('2d'), {
+        type: 'bar', data: { labels, datasets: [
+            { label: 'Realisasi', data: allSkpd.map(d => d.realisasi), backgroundColor: realColors, borderRadius: 6, borderWidth: 0 },
+            { label: 'Anggaran', data: allSkpd.map(d => d.anggaran), backgroundColor: '#cbd5e1', borderRadius: 6 }
+        ]},
+        options: { responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 6, font: { size: 11, weight: '700' } } },
+                tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + formatRp(ctx.raw) } } },
+            scales: { y: { border: { display: false }, ticks: { callback: v => formatRp(v), font: { size: 10, weight: '600' } } },
+                x: { grid: { display: false }, ticks: { font: { size: 10, weight: '700' }, maxRotation: 45, minRotation: 0 } } }
         }
     });
-
-    // Line chart
+	
+	// === Aktifkan scroll horizontal & tampilkan semua label ===
+		const wrapper = document.getElementById('barChartWrapper');
+		if (wrapper) {
+			// 70px per SKPD agar batang tidak terlalu dempet
+			wrapper.style.minWidth = (allSkpd.length * 70) + 'px';
+		}
+		// Pastikan sumbu X menampilkan semua label
+		if (chartBar && chartBar.options.scales.x) {
+			chartBar.options.scales.x.ticks.autoSkip = false;
+			chartBar.update();
+		}
+	
     const batasBulan = data.tren.map((v,i) => v>0 ? i : 0).reduce((a,b) => Math.max(a,b), 0);
     const bulanLabel = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'].slice(0, batasBulan+1);
     let kum = [], ak = 0;
     for (let i=0; i<=batasBulan; i++) { ak += data.tren[i]; kum.push(ak); }
-
     if (chartLine) chartLine.destroy();
-    const lineCtx = document.getElementById('lineChart').getContext('2d');
-    chartLine = new Chart(lineCtx, {
-        type: 'line',
-        data: {
-            labels: bulanLabel,
-            datasets: [{
-                label: 'Kumulatif Realisasi',
-                data: kum,
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16,185,129,0.15)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.3,
-                pointBackgroundColor: '#fff',
-                pointBorderColor: '#10b981',
-                pointBorderWidth: 2,
-                pointRadius: 5,
-                pointHoverRadius: 7,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: { callbacks: { label: ctx => formatRp(ctx.raw) } }
-            },
-            scales: {
-                y: {
-                    border: { display: false },
-                    ticks: { callback: v => formatRp(v), font: { size: 10, weight: '600' } }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: { font: { size: 10, weight: '700' } }
-                }
-            }
+    chartLine = new Chart(document.getElementById('lineChart').getContext('2d'), {
+        type: 'line', data: { labels: bulanLabel, datasets: [{
+            label: 'Kumulatif Realisasi', data: kum, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)',
+            borderWidth: 3, fill: true, tension: 0.3, pointBackgroundColor: '#fff', pointBorderColor: '#10b981',
+            pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 7
+        }]},
+        options: { responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatRp(ctx.raw) } } },
+            scales: { y: { border: { display: false }, ticks: { callback: v => formatRp(v), font: { size: 10, weight: '600' } } },
+                x: { grid: { display: false }, ticks: { font: { size: 10, weight: '700' } } } }
         }
     });
 }
 
-function simpleHash(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash |= 0; // Convert to 32bit integer
-    }
-    return hash;
-}
+function simpleHash(str) { let hash = 0; for (let i = 0; i < str.length; i++) { const char = str.charCodeAt(i); hash = ((hash << 5) - hash) + char; hash |= 0; } return hash; }
 
-// ====================== AUTO SYNC ENGINE ======================
 async function syncData() {
-    const statusEl = document.getElementById('syncStatus');
-    const textEl = document.getElementById('syncText');
+    const statusEl = document.getElementById('syncStatus'), textEl = document.getElementById('syncText');
     try {
-        const csv = await fetchCSV();
-        const newHash = simpleHash(csv);
-        if (newHash === lastDataHash) {
-            // Tidak ada perubahan
-            statusEl.className = 'status live';
-            textEl.textContent = 'Data terkini';
-            return;
-        }
+        const csv = await fetchCSV(), newHash = simpleHash(csv);
+        if (newHash === lastDataHash) { statusEl.className = 'status live'; textEl.textContent = 'Data Terkini'; return; }
         lastDataHash = newHash;
         const processed = processCSV(csv);
-        currentData = processed;
-        updateDashboard(processed);
-        statusEl.className = 'status live';
-        textEl.textContent = 'Sinkronisasi Aktif (' + new Date().toLocaleTimeString() + ')';
+        currentData = processed; updateDashboard(processed);
+        statusEl.className = 'status live'; textEl.textContent = 'Live • ' + new Date().toLocaleTimeString();
     } catch (err) {
-        console.error(err);
-        statusEl.className = 'status offline';
-        textEl.textContent = 'Gagal sinkron: ' + err.message;
-        // Jika ada data sebelumnya, tetap tampilkan
+        console.error(err); statusEl.className = 'status offline'; textEl.textContent = 'Gagal Sinkron';
         if (currentData.skpd.length > 0) updateDashboard(currentData);
     }
 }
 
-// Mulai
-window.addEventListener('DOMContentLoaded', () => {
-    syncData(); // pertama
-    setInterval(syncData, SYNC_INTERVAL);
-});
+window.addEventListener('DOMContentLoaded', () => { syncData(); setInterval(syncData, SYNC_INTERVAL); });
 </script>
 </body>
 </html>
